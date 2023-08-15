@@ -21,7 +21,10 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, line):
-        """Creates a new instance of BaseModel, saves it (to the JSON file) and prints the id"""
+        """
+        Creates a new instance of BaseModel,
+        saves it (to the JSON file) and prints the id
+        """
         if not line:
             print("** class name missing **")
         elif line != "BaseModel":
@@ -33,7 +36,10 @@ class HBNBCommand(cmd.Cmd):
             print(new_instance.id)
 
     def do_show(self, line):
-        """Prints the string representation of an instance based on the class <name> and <id>"""
+        """
+        Prints the string representation
+        of an instance based on the class <name> and <id>
+        """
         if not line:
             print("** class name missing **")
             return
@@ -80,7 +86,10 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
     def do_all(self, line):
-        """Prints all string representation of all instances based or not on the class name"""
+        """
+        Prints all string representation
+        of all instances based or not on the class name
+        """
         from models import storage
 
         args = line.split()
@@ -98,7 +107,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, line):
         """
-            Updates an instance based on the class name and id by adding or updating attribute
+            Updates an instance based on the class
+            name and id by adding or updating attribute
             <class name> <id> <attribute name> "<attribute value>
         """
 
@@ -107,6 +117,11 @@ class HBNBCommand(cmd.Cmd):
             return
 
         args = line.split()
+        name = args[0]
+        if name != "BaseModel":
+            print("** class doesn't exist **")
+            return
+
         if len(args) == 1:
             print("** instance id missing **")
             return
@@ -119,14 +134,9 @@ class HBNBCommand(cmd.Cmd):
             print("** value missing **")
             return
 
-        name = args[0]
         instance_id = args[1]
         attribute_name = args[2]
         attribute_value = args[3]
-
-        if name != "BaseModel":
-            print("** class doesn't exist **")
-            return
 
         from models import storage
         data = storage.all()
@@ -137,6 +147,7 @@ class HBNBCommand(cmd.Cmd):
         object_instance = data[key]
         setattr(object_instance, attribute_name, eval(attribute_value))
         object_instance.save()
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
