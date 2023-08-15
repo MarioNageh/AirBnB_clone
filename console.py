@@ -10,6 +10,7 @@ from models.state import State
 from models.amenity import Amenity
 from models.review import Review
 
+
 class HBNBCommand(cmd.Cmd):
     """This class contains the entry point of the command interpreter"""
 
@@ -153,6 +154,23 @@ class HBNBCommand(cmd.Cmd):
         object_instance = data[key]
         setattr(object_instance, attribute_name, eval(attribute_value))
         object_instance.save()
+
+    def default(self, line):
+        """Handel Custom Commands"""
+        args = line.split('.')
+        if len(args) != 2:
+            print("*** Unknown syntax: {}".format(line))
+            return
+
+        try:
+            class_name = args[0]
+            command = args[1]
+            if command == "all()":
+                custom_command = f"{class_name}"
+                self.do_all(custom_command)
+
+        except:
+            print("*** Unknown syntax: {}".format(line))
 
 
 if __name__ == '__main__':
