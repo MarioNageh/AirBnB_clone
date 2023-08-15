@@ -97,7 +97,7 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 1:
             class_name = args[0]
 
-        if class_name != "BaseModel":
+        if class_name != "BaseModel" and class_name is not None:
             print("** class doesn't exist **")
             return
 
