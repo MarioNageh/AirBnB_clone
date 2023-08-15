@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """This module contains the entry point of the command interpreter"""
 import cmd
+import models
+from models.user import User
+from models.base_model import BaseModel
 
 
 class HBNBCommand(cmd.Cmd):
@@ -27,11 +30,10 @@ class HBNBCommand(cmd.Cmd):
         """
         if not line:
             print("** class name missing **")
-        elif line != "BaseModel":
+        elif line not in models.storage.CLASSES:
             print("** class doesn't exist **")
         else:
-            from models.base_model import BaseModel
-            new_instance = BaseModel()
+            new_instance = eval(f"{line}()")
             new_instance.save()
             print(new_instance.id)
 
@@ -50,16 +52,15 @@ class HBNBCommand(cmd.Cmd):
             return
         name = args[0]
         instance_id = args[1]
-        if name != "BaseModel":
+        if name not in models.storage.CLASSES:
             print("** class doesn't exist **")
             return
 
-        from models import storage
         key = name + "." + instance_id
-        if key not in storage.all():
+        if key not in models.storage.all():
             print("** no instance found **")
             return
-        print(storage.all()[key])
+        print(models.storage.all()[key])
 
     def do_destroy(self, line):
         """Deletes an instance based on the class <name> and <id>"""
@@ -73,36 +74,33 @@ class HBNBCommand(cmd.Cmd):
             return
         name = args[0]
         instance_id = args[1]
-        if name != "BaseModel":
+        if name not in models.storage.CLASSES:
             print("** class doesn't exist **")
             return
 
-        from models import storage
         key = name + "." + instance_id
-        if key not in storage.all():
+        if key not in models.storage.all():
             print("** no instance found **")
             return
-        del storage.all()[key]
-        storage.save()
+        del models.storage.all()[key]
+        models.storage.save()
 
     def do_all(self, line):
         """
         Prints all string representation
         of all instances based or not on the class name
         """
-        from models import storage
-
         args = line.split()
         class_name = None
         if len(args) == 1:
             class_name = args[0]
 
-        if class_name != "BaseModel" and class_name is not None:
+        if class_name not in models.storage.CLASSES and class_name is not None:
             print("** class doesn't exist **")
             return
 
         list_of_instances = []
-        for key, value in storage.all().items():
+        for key, value in models.storage.all().items():
             if not class_name:
                 list_of_instances.append(value.__str__())
             elif value.__class__.__name__ == class_name:
@@ -123,7 +121,7 @@ class HBNBCommand(cmd.Cmd):
 
         args = line.split()
         name = args[0]
-        if name != "BaseModel":
+        if name not in models.storage.CLASSES:
             print("** class doesn't exist **")
             return
 
@@ -143,8 +141,7 @@ class HBNBCommand(cmd.Cmd):
         attribute_name = args[2]
         attribute_value = args[3]
 
-        from models import storage
-        data = storage.all()
+        data = models.storage.all()
         key = name + "." + instance_id
         if key not in data:
             print("** no instance found **")

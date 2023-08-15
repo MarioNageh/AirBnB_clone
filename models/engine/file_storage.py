@@ -2,6 +2,7 @@
 """ File storage module """
 import json
 from models.base_model import BaseModel
+from models.user import User
 
 
 class FileStorage:
@@ -9,6 +10,10 @@ class FileStorage:
 
     __file_path = 'file.json'
     __objects = {}
+    CLASSES = {
+        "BaseModel": BaseModel,
+        "User": User,
+    }
 
     def all(self):
         """
@@ -33,7 +38,8 @@ class FileStorage:
                 data = json.load(f)
 
             for key, value in data.items():
-                model = BaseModel(**value)
+                class_name = value['__class__']
+                model = self.CLASSES[class_name](**value)
                 self.__objects[key] = model
         except Exception as e:
             pass
