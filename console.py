@@ -195,6 +195,11 @@ class HBNBCommand(cmd.Cmd):
             elif command == "count()":
                 custom_command = f"{class_name}"
                 self.do_count(custom_command)
+            elif command.__contains__("show"):
+                instance_id = command.split('"')[1]
+                custom_command = f"{class_name} {instance_id}"
+                self.do_show(custom_command)
+
         except:
             print("*** Unknown syntax: {}".format(line))
 
