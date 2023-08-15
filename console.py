@@ -113,6 +113,30 @@ class HBNBCommand(cmd.Cmd):
 
         print(list_of_instances)
 
+
+
+    def do_count(self, line):
+        """
+        Prints all string representation
+        of all instances based or not on the class name
+        """
+        args = line.split()
+        class_name = None
+        if len(args) == 1:
+            class_name = args[0]
+
+        if class_name not in models.storage.CLASSES and class_name is not None:
+            print("** class doesn't exist **")
+            return
+
+        list_of_instances = []
+        for key, value in models.storage.all().items():
+            if not class_name:
+                list_of_instances.append(value.__str__())
+            elif value.__class__.__name__ == class_name:
+                list_of_instances.append(value.__str__())
+
+        print(len(list_of_instances))
     def do_update(self, line):
         """
             Updates an instance based on the class
@@ -168,7 +192,9 @@ class HBNBCommand(cmd.Cmd):
             if command == "all()":
                 custom_command = f"{class_name}"
                 self.do_all(custom_command)
-
+            elif command == "count()":
+                custom_command = f"{class_name}"
+                self.do_count(custom_command)
         except:
             print("*** Unknown syntax: {}".format(line))
 
