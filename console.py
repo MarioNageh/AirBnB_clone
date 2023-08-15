@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """This module contains the entry point of the command interpreter"""
 import cmd
+import json
+import re
+
 import models
 from models.user import User
 from models.base_model import BaseModel
@@ -113,8 +116,6 @@ class HBNBCommand(cmd.Cmd):
 
         print(list_of_instances)
 
-
-
     def do_count(self, line):
         """
         Prints all string representation
@@ -137,6 +138,7 @@ class HBNBCommand(cmd.Cmd):
                 list_of_instances.append(value.__str__())
 
         print(len(list_of_instances))
+
     def do_update(self, line):
         """
             Updates an instance based on the class
@@ -205,17 +207,35 @@ class HBNBCommand(cmd.Cmd):
                 self.do_destroy(custom_command)
             elif command.__contains__("update"):
                 arguments = command.split(',')
-                if len(arguments) < 3:
-                    print("*** Unknown syntax: {}".format(line))
-                    return
-                instance_id = arguments[0].split('"')[1]
-                attribute_name = arguments[1].split('"')[1]
-                attribute_value = arguments[2].split('"')[1]
-                custom_command = f"{class_name} {instance_id} {attribute_name} \"{attribute_value}\""
-                self.do_update(custom_command)
+                if arguments[1].__contains__('{'):
+                    start = command.find('{')
+                    end = command.find('}', start)
+                    if start != -1 and end != -1:
+                        json_text = command[start + 1:end]
+                        instance_id = arguments[0].split('"')[1]
+
+                        key_value_pairs = json_text.split(',')
+                        for attribute in key_value_pairs:
+                            key_value = attribute.split(':')
+                            attribute_name = key_value[0].strip()
+                            attribute_value = key_value[1].strip()
+                            custom_command = f"{class_name} {instance_id} {eval(attribute_name)} {attribute_value}"
+                            self.do_update(custom_command)
+                    else:
+                        raise Exception("Unknown syntax")
+
+                elif len(arguments) == 3:
+                    instance_id = arguments[0].split('"')[1]
+                    attribute_name = arguments[1]
+                    attribute_value = arguments[2].replace(")", '')
+                    custom_command = f"{class_name} {instance_id} {eval(attribute_name)} {attribute_value}"
+                    self.do_update(custom_command)
+                else:
+                    raise Exception("Unknown syntax")
             else:
                 raise Exception("Unknown syntax")
         except Exception as e:
+            raise e
             print(e)
             print("*** Unknown syntax: {}".format(line))
 
