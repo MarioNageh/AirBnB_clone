@@ -29,9 +29,7 @@ class BaseModel:
 
         :returns dictionary representation
         """
-        data = {
-            **self.__dict__
-        }
+        data = self.__dict__.copy()
         data["__class__"] = self.__class__.__name__
         data["created_at"] = self.created_at.isoformat()
         data["updated_at"] = self.updated_at.isoformat()
