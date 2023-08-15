@@ -39,6 +39,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertNotEqual(new_base, self.base)
         self.assertDictEqual(new_base.__dict__, self.base.__dict__)
 
+
     def test_to_dict(self):
         """
             test to_dict class method
