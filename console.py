@@ -203,8 +203,20 @@ class HBNBCommand(cmd.Cmd):
                 instance_id = command.split('"')[1]
                 custom_command = f"{class_name} {instance_id}"
                 self.do_destroy(custom_command)
-
-        except:
+            elif command.__contains__("update"):
+                arguments = command.split(',')
+                if len(arguments) < 3:
+                    print("*** Unknown syntax: {}".format(line))
+                    return
+                instance_id = arguments[0].split('"')[1]
+                attribute_name = arguments[1].split('"')[1]
+                attribute_value = arguments[2].split('"')[1]
+                custom_command = f"{class_name} {instance_id} {attribute_name} \"{attribute_value}\""
+                self.do_update(custom_command)
+            else:
+                raise Exception("Unknown syntax")
+        except Exception as e:
+            print(e)
             print("*** Unknown syntax: {}".format(line))
 
 
