@@ -199,6 +199,10 @@ class HBNBCommand(cmd.Cmd):
                 instance_id = command.split('"')[1]
                 custom_command = f"{class_name} {instance_id}"
                 self.do_show(custom_command)
+            elif command.__contains__("destroy"):
+                instance_id = command.split('"')[1]
+                custom_command = f"{class_name} {instance_id}"
+                self.do_destroy(custom_command)
 
         except:
             print("*** Unknown syntax: {}".format(line))
