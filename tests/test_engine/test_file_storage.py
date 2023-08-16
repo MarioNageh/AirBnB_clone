@@ -2,6 +2,7 @@
 """
 Test cases for FileStorage class
 """
+import json
 import unittest
 from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
@@ -73,3 +74,22 @@ class TestFileStorage(unittest.TestCase):
         self.assertIn("City." + c_y_c.id, objs)
         self.assertIn("Amenity." + a_m_c.id, objs)
         self.assertIn("Review." + r_v_c.id, objs)
+
+    def test_all(self):
+        fs = FileStorage()
+        self.assertIsInstance(fs.all(), dict)
+        for v in fs.all().values():
+            self.assertIsInstance(v, BaseModel)
+
+    def test_new(self):
+        fs = FileStorage()
+        bs = BaseModel()
+        self.assertIn(bs, fs.all().values())
+
+    def test_save_method(self):
+        bs = BaseModel()
+        key = ".".join([bs.__class__.__name__, bs.id])
+        models.storage.save()
+        with open("file.json", "r") as f:
+            rd = json.load(f)
+            self.assertIn(key, rd)
