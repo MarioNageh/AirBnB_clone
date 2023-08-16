@@ -57,6 +57,7 @@ class TestBaseModel(unittest.TestCase):
         self.base.my_number = 90
         self.base.save()
         after_update_time = self.base.updated_at
+        self.assertNotEqual(before_update_time, after_update_time)
 
     def test_str(self):
         """ test __str__ method"""
