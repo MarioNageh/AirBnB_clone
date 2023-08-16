@@ -8,7 +8,13 @@ from models.base_model import BaseModel
 from models import storage
 from datetime import datetime
 import os
-
+import models
+from models.user import User
+from models.place import Place
+from models.city import City
+from models.state import State
+from models.amenity import Amenity
+from models.review import Review
 
 class TestFileStorage(unittest.TestCase):
     """
@@ -37,3 +43,33 @@ class TestFileStorage(unittest.TestCase):
         new_base_model = BaseModel()
         new_base_model.save()
         self.assertTrue(os.path.exists("file.json"))
+
+    def test_reload_method_with_arg(self):
+        with self.assertRaises(TypeError):
+            models.storage.reload(None)
+
+    def test_reload_method(self):
+        b_m_c = BaseModel()
+        u_s_c = User()
+        s_t_c = State()
+        p_l_c = Place()
+        c_y_c = City()
+        a_m_c = Amenity()
+        r_v_c = Review()
+        models.storage.new(b_m_c)
+        models.storage.new(u_s_c)
+        models.storage.new(s_t_c)
+        models.storage.new(p_l_c)
+        models.storage.new(c_y_c)
+        models.storage.new(a_m_c)
+        models.storage.new(r_v_c)
+        models.storage.save()
+        models.storage.reload()
+        objs = FileStorage._FileStorage__objects
+        self.assertIn("BaseModel." + b_m_c.id, objs)
+        self.assertIn("User." + u_s_c.id, objs)
+        self.assertIn("State." + s_t_c.id, objs)
+        self.assertIn("Place." + p_l_c.id, objs)
+        self.assertIn("City." + c_y_c.id, objs)
+        self.assertIn("Amenity." + a_m_c.id, objs)
+        self.assertIn("Review." + r_v_c.id, objs)
