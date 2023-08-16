@@ -23,6 +23,25 @@ class TestFileStorage(unittest.TestCase):
     """
     fs = FileStorage()
 
+    @classmethod
+    def setUp(self):
+        try:
+            os.rename("file.json", "f.json")
+        except IOError:
+            pass
+
+    @classmethod
+    def tearDown(self):
+        try:
+            os.remove("file.json")
+        except IOError:
+            pass
+        try:
+            os.rename("f.json", "file.json")
+        except IOError:
+            pass
+        FileStorage._FileStorage__objects = {}
+
     def test_default_values(self):
         """test default value"""
 
