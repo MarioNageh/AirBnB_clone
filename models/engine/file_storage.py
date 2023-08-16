@@ -51,8 +51,6 @@ class FileStorage:
                 class_name = value['__class__']
                 model = self.CLASSES[class_name](**value)
                 self.__objects[key] = model
-        except FileNotFoundError as e:
-            raise e
         except Exception as e:
             pass
 

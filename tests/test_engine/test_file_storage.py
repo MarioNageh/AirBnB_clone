@@ -163,9 +163,6 @@ class TestFileStorage_function(unittest.TestCase):
         except IOError:
             pass
         FileStorage._FileStorage__objects = {}
-    def test_reload_no_file(self):
-        with self.assertRaises(FileNotFoundError):
-            models.storage.reload()
 
     def test_reload_with_arg(self):
         with self.assertRaises(TypeError):
