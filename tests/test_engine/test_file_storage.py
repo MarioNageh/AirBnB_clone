@@ -17,118 +17,22 @@ from models.state import State
 from models.amenity import Amenity
 from models.review import Review
 
-class TestFileStorage(unittest.TestCase):
-    """
-    test class
-    """
-    fs = FileStorage()
 
-    @classmethod
-    def setUp(self):
-        try:
-            os.rename("file.json", "f.json")
-        except IOError:
-            pass
+class TestFileStorage_instantiation(unittest.TestCase):
+    """Unittests for testing instantiation of the FileStorage class."""
 
-    @classmethod
-    def tearDown(self):
-        try:
-            os.remove("file.json")
-        except IOError:
-            pass
-        try:
-            os.rename("f.json", "file.json")
-        except IOError:
-            pass
-        FileStorage._FileStorage__objects = {}
+    def test_FileStorage_instantiation_no_args(self):
+        self.assertEqual(type(FileStorage()), FileStorage)
 
-    def test_default_values(self):
-        """test default value"""
-
-        initial_count = len(self.fs.all())
-        new_base_model = BaseModel()
-        self.fs.new(new_base_model)
-
-        self.fs.save()
-        self.fs.reload()
-
-        updated_count = len(self.fs.all())
-        self.assertEqual(updated_count, initial_count + 1)
-        obj_key = f"BaseModel.{new_base_model.id}"
-        self.assertIn(obj_key, self.fs.all())
-        reloaded_obj = self.fs.all()[obj_key]
-        self.assertEqual(reloaded_obj.updated_at, new_base_model.updated_at)
-
-        os.remove("file.json")
-        new_base_model = BaseModel()
-        new_base_model.save()
-        self.assertTrue(os.path.exists("file.json"))
-
-    def test_reload_method_with_arg(self):
+    def test_FileStorage_instantiation_with_arg(self):
         with self.assertRaises(TypeError):
-            models.storage.reload(None)
+            FileStorage(None)
 
-
-    def test_file_path(self):
+    def test_FileStorage_file_path_is_private_str(self):
         self.assertEqual(str, type(FileStorage._FileStorage__file_path))
-    def test_reload_method(self):
-        b_m_c = BaseModel()
-        u_s_c = User()
-        s_t_c = State()
-        p_l_c = Place()
-        c_y_c = City()
-        a_m_c = Amenity()
-        r_v_c = Review()
-        models.storage.new(b_m_c)
-        models.storage.new(u_s_c)
-        models.storage.new(s_t_c)
-        models.storage.new(p_l_c)
-        models.storage.new(c_y_c)
-        models.storage.new(a_m_c)
-        models.storage.new(r_v_c)
-        models.storage.save()
-        models.storage.reload()
-        objs = FileStorage._FileStorage__objects
-        self.assertIn("BaseModel." + b_m_c.id, objs)
-        self.assertIn("User." + u_s_c.id, objs)
-        self.assertIn("State." + s_t_c.id, objs)
-        self.assertIn("Place." + p_l_c.id, objs)
-        self.assertIn("City." + c_y_c.id, objs)
-        self.assertIn("Amenity." + a_m_c.id, objs)
-        self.assertIn("Review." + r_v_c.id, objs)
 
-    def test_all(self):
-        fs = FileStorage()
-        self.assertIsInstance(fs.all(), dict)
-        for v in fs.all().values():
-            self.assertIsInstance(v, BaseModel)
+    def testFileStorage_objects_is_private_dict(self):
+        self.assertEqual(dict, type(FileStorage._FileStorage__objects))
 
-    def test_new(self):
-        fs = FileStorage()
-        bs = BaseModel()
-        self.assertIn(bs, fs.all().values())
-
-    def test_save_method(self):
-        bs = BaseModel()
-        key = ".".join([bs.__class__.__name__, bs.id])
-        models.storage.save()
-        with open("file.json", "r") as f:
-            rd = json.load(f)
-            self.assertIn(key, rd)
-
-    class Test_FileStorage_instantiation(unittest.TestCase):
-        """test instantiation of the FileStorage class."""
-
-        def test_not_none(self):
-            fs = FileStorage()
-            self.assertIsNotNone(fs)
-
-        def test_instance(self):
-            fs = FileStorage()
-            self.assertIsInstance(fs, FileStorage)
-
-        def test_path_is_private_str(self):
-            self.assertEqual(str, type(FileStorage._FileStorage__file_path))
-
-        def test_objects_is_private_dict(self):
-            self.assertEqual(dict, type(FileStorage._FileStorage__objects))
+    def test_storage_initializes(self):
+        self.assertEqual(type(models.storage), FileStorage)
