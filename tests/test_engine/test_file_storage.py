@@ -68,6 +68,9 @@ class TestFileStorage(unittest.TestCase):
         with self.assertRaises(TypeError):
             models.storage.reload(None)
 
+
+    def test_file_path(self):
+        self.assertEqual(str, type(FileStorage._FileStorage__file_path))
     def test_reload_method(self):
         b_m_c = BaseModel()
         u_s_c = User()
